@@ -134,7 +134,7 @@ Contributions are welcome! Feel free to:
 
 ## Acknowledgments
 
-- Inspired by the fascinating unsolved problem in mathematics
+- This project was inspired by the Veritasium video “The Simplest Math Problem No One Can Solve – Collatz Conjecture” on YouTube.
 - Built as a learning project to explore GUI development and data visualization in Python
 
 ## Author

@@ -135,16 +135,12 @@ Contributions are welcome! Feel free to:
 ## Acknowledgments
 
 - This project was inspired by the Veritasium video “The Simplest Math Problem No One Can Solve – Collatz Conjecture” on YouTube.
+- Link to video -> https://www.youtube.com/watch?v=094y1Z2wpJg
 - Built as a learning project to explore GUI development and data visualization in Python
 
 ## Author
 
 Created by Ayush Shukla(Mehroom)
-
-## Links
-
-- [GitHub Repository](https://github.com/ayushShukla2006/Collatz-Conjecture)
-- [Report Issues](https://github.com/ayushShukla2006/Collatz-Conjecture/issues)
 
 ---
 

@@ -20,7 +20,7 @@ class CollatzGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Collatz Conjecture Visualizer")
-        self.root.geometry("600x700")
+        self.root.geometry("600x750")
         self.root.resizable(True, True)
         
         # Configure style
@@ -55,6 +55,8 @@ class CollatzGUI:
         buttons = [
             ("📊 Single Sequence", self.single_sequence_window),
             ("📈 Multiple Sequences", self.multiple_sequences_window),
+            ("🌳 Tree Path (Single)", self.tree_visualization_window),
+            ("🌲 Tree Paths (Multiple)", self.multiple_tree_visualization_window),
             ("⏱️ Stopping Times", self.stopping_times_window),
             ("🔝 Maximum Values", self.max_values_window),
             ("📝 View Sequence (Text)", self.text_sequence_window),
@@ -358,6 +360,195 @@ class CollatzGUI:
                  font=('Arial', 11), width=15, height=2, cursor='hand2').pack(side='left', padx=5)
         
         entry.bind('<Return>', lambda e: show_sequence())
+    
+    def tree_visualization_window(self):
+        """Window for tree-based path visualization."""
+        win = tk.Toplevel(self.root)
+        win.title("Tree Path Visualization")
+        win.geometry("400x250")
+        
+        tk.Label(win, text="Tree Path Visualization", 
+                font=('Arial', 16, 'bold')).pack(pady=20)
+        
+        tk.Label(win, text="Enter starting number:", 
+                font=('Arial', 11)).pack(pady=5)
+        tk.Label(win, text="(Even→Left, Odd→Right)", 
+                font=('Arial', 9), fg='gray').pack()
+        
+        entry = tk.Entry(win, font=('Arial', 12), width=20)
+        entry.pack(pady=10)
+        entry.focus()
+        
+        def visualize():
+            try:
+                num = int(entry.get())
+                if num <= 0:
+                    messagebox.showerror("Error", "Please enter a positive number!")
+                    return
+                
+                seq = collatz_sequence(num)
+                
+                import math
+                import numpy as np
+                
+                # Calculate positions
+                x, y = [0], [0]
+                angle = -90  # Start pointing up
+                step_length = 1
+                
+                for i in range(1, len(seq)):
+                    # Determine turn direction based on previous number
+                    prev_num = seq[i-1]
+                    if prev_num % 2 == 0:
+                        angle -= 20  # Turn left for even
+                    else:
+                        angle += 20  # Turn right for odd
+                    
+                    # Calculate new position
+                    rad = math.radians(angle)
+                    new_x = x[-1] + step_length * math.cos(rad)
+                    new_y = y[-1] + step_length * math.sin(rad)
+                    x.append(new_x)
+                    y.append(new_y)
+                
+                # Create plot
+                fig, ax = plt.subplots(figsize=(12, 10))
+                
+                # Color gradient from start (blue) to end (red)
+                colors = plt.cm.viridis(np.linspace(0, 1, len(seq)))
+                
+                # Plot the path
+                for i in range(len(x)-1):
+                    ax.plot([x[i], x[i+1]], [y[i], y[i+1]], 
+                           color=colors[i], linewidth=2, alpha=0.7)
+                
+                # Mark start and end
+                ax.plot(x[0], y[0], 'go', markersize=15, label=f'Start: {num}', zorder=5)
+                ax.plot(x[-1], y[-1], 'ro', markersize=15, label='End: 1', zorder=5)
+                
+                ax.set_xlabel('X Position', fontsize=12)
+                ax.set_ylabel('Y Position', fontsize=12)
+                ax.set_title(f'Collatz Tree Path for {num}\n'
+                           f'Length: {len(seq)} steps | Even→Left, Odd→Right', 
+                           fontsize=13, fontweight='bold')
+                ax.legend(fontsize=10)
+                ax.grid(True, alpha=0.3)
+                ax.axis('equal')
+                plt.tight_layout()
+                plt.show()
+                
+            except ValueError:
+                messagebox.showerror("Error", "Please enter a valid number!")
+        
+        btn_frame = tk.Frame(win)
+        btn_frame.pack(pady=20)
+        
+        tk.Button(btn_frame, text="Visualize", command=visualize,
+                 font=('Arial', 11), bg='#2E86AB', fg='white',
+                 width=12, height=2, cursor='hand2').pack(side='left', padx=5)
+        
+        tk.Button(btn_frame, text="Close", command=win.destroy,
+                 font=('Arial', 11), width=12, height=2, cursor='hand2').pack(side='left', padx=5)
+        
+        entry.bind('<Return>', lambda e: visualize())
+    
+    def multiple_tree_visualization_window(self):
+        """Window for multiple tree-based path visualization."""
+        win = tk.Toplevel(self.root)
+        win.title("Multiple Tree Paths Visualization")
+        win.geometry("450x250")
+        
+        tk.Label(win, text="Multiple Tree Paths", 
+                font=('Arial', 16, 'bold')).pack(pady=20)
+        
+        tk.Label(win, text="Enter numbers separated by commas:", 
+                font=('Arial', 11)).pack(pady=5)
+        tk.Label(win, text="(e.g., 7,15,27) Even→Left, Odd→Right", 
+                font=('Arial', 9), fg='gray').pack()
+        
+        entry = tk.Entry(win, font=('Arial', 12), width=30)
+        entry.pack(pady=10)
+        entry.focus()
+        
+        def visualize():
+            try:
+                numbers = [int(x.strip()) for x in entry.get().split(',')]
+                if not all(n > 0 for n in numbers):
+                    messagebox.showerror("Error", "All numbers must be positive!")
+                    return
+                
+                import math
+                import numpy as np
+                
+                fig, ax = plt.subplots(figsize=(14, 12))
+                
+                # Different colors for each starting number
+                base_colors = plt.cm.tab10(range(len(numbers)))
+                
+                for idx, num in enumerate(numbers):
+                    seq = collatz_sequence(num)
+                    
+                    # Calculate positions for this sequence
+                    x, y = [0], [0]
+                    angle = -90  # Start pointing up
+                    step_length = 1
+                    
+                    for i in range(1, len(seq)):
+                        prev_num = seq[i-1]
+                        if prev_num % 2 == 0:
+                            angle -= 20  # Turn left for even
+                        else:
+                            angle += 20  # Turn right for odd
+                        
+                        # Calculate new position
+                        rad = math.radians(angle)
+                        new_x = x[-1] + step_length * math.cos(rad)
+                        new_y = y[-1] + step_length * math.sin(rad)
+                        x.append(new_x)
+                        y.append(new_y)
+                    
+                    # Plot the path with gradient
+                    colors = [base_colors[idx] for _ in range(len(seq))]
+                    alphas = np.linspace(0.8, 0.3, len(seq))
+                    
+                    for i in range(len(x)-1):
+                        ax.plot([x[i], x[i+1]], [y[i], y[i+1]], 
+                               color=colors[i], linewidth=2, alpha=alphas[i])
+                    
+                    # Mark start
+                    ax.plot(x[0], y[0], 'o', color=base_colors[idx], 
+                           markersize=12, label=f'Start: {num}', zorder=5,
+                           markeredgecolor='black', markeredgewidth=1.5)
+                
+                # Mark the common end point
+                ax.plot(0, 0, 'ro', markersize=15, label='All end at (0,0)', 
+                       zorder=6, markeredgecolor='darkred', markeredgewidth=2)
+                
+                ax.set_xlabel('X Position', fontsize=12)
+                ax.set_ylabel('Y Position', fontsize=12)
+                ax.set_title(f'Collatz Tree Paths Comparison\n'
+                           f'Starting numbers: {", ".join(map(str, numbers))} | Even→Left, Odd→Right', 
+                           fontsize=13, fontweight='bold')
+                ax.legend(fontsize=9, loc='best')
+                ax.grid(True, alpha=0.3)
+                ax.axis('equal')
+                plt.tight_layout()
+                plt.show()
+                
+            except ValueError:
+                messagebox.showerror("Error", "Please enter valid numbers separated by commas!")
+        
+        btn_frame = tk.Frame(win)
+        btn_frame.pack(pady=20)
+        
+        tk.Button(btn_frame, text="Visualize", command=visualize,
+                 font=('Arial', 11), bg='#2E86AB', fg='white',
+                 width=12, height=2, cursor='hand2').pack(side='left', padx=5)
+        
+        tk.Button(btn_frame, text="Close", command=win.destroy,
+                 font=('Arial', 11), width=12, height=2, cursor='hand2').pack(side='left', padx=5)
+        
+        entry.bind('<Return>', lambda e: visualize())
     
     def show_about(self):
         """Show about dialog."""

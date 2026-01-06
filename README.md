@@ -34,6 +34,8 @@ The Collatz Conjecture is one of mathematics' most famous unsolved problems. Des
 ![screenshot2](Screenshots/Screenshot2.png)
 ![screenshot3](Screenshots/Screenshot3.png)
 ![screenshot4](Screenshots/Screenshot4.png)
+![screenshot5](Screenshots/Screenshot5.png)
+![screenshot6](Screenshots/Screenshot6.png)
 
 ## Installation
 
@@ -83,6 +85,19 @@ python collatz_visualizer.py
 2. Enter numbers separated by commas: `7,15,27`
 3. Choose normal or log scale
 4. Click "Visualize"
+
+### Tree View for Single Number
+
+1. click Tree Path (Single)
+2. Enter a number (try 27 for an interesting pattern)
+3. Click "Visualize"
+
+### Tree View for Multiple Number
+
+1. click Tree Paths (Multiple)
+2. Enter a number (try 3,6,12,24 for an interesting pattern)
+3. Click "Visualize"
+
 
 ### Analyze Patterns
 1. Click "Stopping Times" or "Maximum Values"

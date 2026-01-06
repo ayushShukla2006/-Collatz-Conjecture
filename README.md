@@ -23,6 +23,8 @@ The Collatz Conjecture is one of mathematics' most famous unsolved problems. Des
 
 - **Single Sequence Visualization** - Watch how a single number progresses through the sequence
 - **Multiple Sequences** - Compare multiple starting numbers on the same graph
+- **Tree View** - Watch Binary Tree for a single number progression
+-**Multiple Tree View** - Compare multiple Binary Tree on the same graph 
 - **Stopping Times Analysis** - See how many steps different numbers take to reach 1
 - **Maximum Values Analysis** - Discover the peak values reached during each sequence
 - **Text View** - View complete sequences in text format
